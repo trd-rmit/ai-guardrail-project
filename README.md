@@ -6,6 +6,10 @@ The first experiment is **Clinical Guardrail Lab**. Guardrails built for general
 
 All test data is made up by hand. Never add real patient data to this repo.
 
+![Pipeline from a message through input checks, across a trust boundary to an LLM, then through output checks to a reply. Only the three input checks have been tested so far.](docs/figures/pipeline.svg)
+
+Identifiers have to be removed before text crosses the boundary, so detection comes first. Only the solid boxes exist today, and the lab detects identifiers without replacing them yet. Miss counts are from held-out and fresh test cases.
+
 ## Results so far
 
 ### Finding identifiers
@@ -19,7 +23,13 @@ These 167 fresh cases were written before any guardrail ran on them, and nothing
 | Clinical RoBERTa | 11 of 59 | 7 of 24 | 0 of 108 | about 180 ms |
 | **Clinical RoBERTa + patterns** | **12 of 59** | **0 of 24** | **0 of 108** | about 180 ms |
 
+![Scatter chart of false alarms against identifiers missed. Presidio default: 26 of 59 and 28 of 132. Presidio tuned: 11 of 59 and 17 of 132. Clinical model: 11 of 59 and 7 of 132. Clinical model plus patterns: 12 of 59 and 0 of 132.](docs/figures/results.svg)
+
 The combined setup uses [`obi/deid_roberta_i2b2`](https://huggingface.co/obi/deid_roberta_i2b2), a model trained on clinical notes, plus Presidio's fixed patterns for emails, phone numbers and SSNs and a custom record number pattern. A note counts as missed if any identifier in it isn't fully masked, so partly masking an email or a record number counts as a miss.
+
+![A test note goes to the clinical model and to fixed patterns. The model flags the name and only the first five digits of the record number. Patterns flag the whole number. Together they cover both identifiers and leave the clinical text unflagged.](docs/figures/combined-detection.svg)
+
+This is the real output for one fresh test case, with flagged text underlined. Presidio's default setup flagged only the name on this note.
 
 Missed names on the same cases, out of 18 sentences per group:
 
@@ -57,6 +67,10 @@ These numbers come from the 38 held-out cases, whose mistakes have been reviewed
 - **A threshold can't fix the injection model.** Across the development and held-out cases it makes 5 false alarms and 3 misses at every threshold tested from 0.05 to 0.95. "Disregard the previous dose" scores about 1.0, and a request for the names and addresses of every patient with HIV scores about 0.
 - **Asking for someone else's records isn't an injection.** These requests need access controls in the application, not a text classifier.
 
+![Two line charts against threshold, with false alarms in blue and attacks missed in orange. The injection model stays flat at 5 of 68 false alarms and 3 of 17 missed. The content model moves from 6 of 68 false alarms and 0 of 7 missed to 0 of 68 and 3 of 7.](docs/figures/thresholds.svg)
+
+Blue lines are false alarms on clinical notes and orange lines are attacks missed, across development and held-out cases.
+
 ### How far to trust this
 
 These are 739 cases written by one author, mostly short sentences, with few examples per category. Read them as signs of where to look, not as benchmarks. The real test is the organisation's own data, inside an environment approved for it.
@@ -93,6 +107,7 @@ To re-run the guardrails on the test set, or run the self-checks:
 - `scoring.py`: how false alarms and misses are counted
 - `evaluate.py`: runs every check and saves `results/scores.json`
 - `app.py`: the Streamlit lab
+- `docs/figures/`: the diagrams in this README, which switch between light and dark themes
 
 ## Limits
 

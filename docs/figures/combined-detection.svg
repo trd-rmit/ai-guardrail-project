@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="250" viewBox="0 0 1000 250" role="img" aria-label="A real test note goes to the clinical model and to fixed patterns. The model flags the name and only the first five digits of the record number. Patterns flag the whole record number. Their union covers both identifiers and leaves the clinical text unflagged."><style>
+svg{background:#ffffff;--surface:#ffffff;--fg:#12202a;--muted:#52626d;--faint:#6d7b84;--line:#d5dde2;--s1:#2a78d6;--s2:#eb6834;--point:#8795a0;--ring:#ffffff;--crit:#b42626;color:var(--fg)}
+@media (prefers-color-scheme:dark){svg{background:#0d1117;--surface:#182229;--fg:#e8eef1;--muted:#a6b5bf;--faint:#8a99a3;--line:#2d3b44;--s1:#3987e5;--s2:#d95926;--point:#8a99a3;--ring:#0d1117;--crit:#ff9a90;}}
+.box{fill:var(--surface);stroke:var(--fg);stroke-width:1.25}
+.group{fill:none;stroke:var(--line);stroke-width:1.25}
+.planned{fill:var(--surface);stroke:var(--muted);stroke-width:1.25;stroke-dasharray:5 4}
+.edge{fill:none;stroke:var(--fg);stroke-width:1.5}
+.edge-planned{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.boundary{stroke:var(--crit);stroke-width:1.25;stroke-dasharray:2 4}
+.grid{stroke:var(--line);stroke-width:1}
+.axis{stroke:var(--faint);stroke-width:1}
+.t{fill:var(--fg);font:12.5px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.tb{fill:var(--fg);font:600 13px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.tm{fill:var(--muted);font:12px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.code{fill:var(--fg);font:13px ui-monospace,SFMono-Regular,Consolas,Menlo,monospace}
+.hit{fill:var(--fg);font:600 13px ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;text-decoration:underline}
+.bound-label{fill:var(--crit);font:12px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.line1{fill:none;stroke:var(--s1);stroke-width:2}
+.line2{fill:none;stroke:var(--s2);stroke-width:2}
+.dot{fill:var(--point);stroke:var(--ring);stroke-width:2}
+.dot-key{fill:var(--s1);stroke:var(--ring);stroke-width:2}
+</style>
+          <defs>
+            <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+          </defs>
+          <rect class="box" x="16" y="92" width="224" height="66" rx="4"/>
+          <text class="code" x="28" y="120">Tomas Ek, MRN 4471926,</text>
+          <text class="code" x="28" y="140">denies suicidal ideation.</text>
+
+          <path class="edge" d="M240 125 H280 V58 H318" marker-end="url(#a2)"/>
+          <path class="edge" d="M280 125 V192 H318" marker-end="url(#a2)"/>
+          <text class="t" x="290" y="130">same text</text>
+
+          <rect class="box" x="320" y="30" width="160" height="56" rx="4"/>
+          <text class="tb" x="400" y="54" text-anchor="middle">Clinical model</text>
+          <text class="tm" x="400" y="72" text-anchor="middle">obi/deid_roberta_i2b2</text>
+
+          <rect class="box" x="320" y="164" width="160" height="56" rx="4"/>
+          <text class="tb" x="400" y="188" text-anchor="middle">Fixed patterns</text>
+          <text class="tm" x="400" y="206" text-anchor="middle">email, phone, SSN, MRN</text>
+
+          <path class="edge" d="M480 58 H700 V90" marker-end="url(#a2)"/>
+          <text class="code" x="492" y="50">Tomas Ek, 44719</text>
+          <text class="tm" x="492" y="76">only part of the number</text>
+
+          <path class="edge" d="M480 192 H700 V160" marker-end="url(#a2)"/>
+          <text class="code" x="492" y="184">4471926</text>
+          <text class="tm" x="492" y="210">"MRN" nearby confirms it</text>
+
+          <rect class="box" x="650" y="92" width="100" height="66" rx="4"/>
+          <text class="tb" x="700" y="122" text-anchor="middle">Union</text>
+          <text class="tm" x="700" y="140" text-anchor="middle">all flagged text</text>
+
+          <line class="edge" x1="750" y1="125" x2="776" y2="125" marker-end="url(#a2)"/>
+
+          <rect class="box" x="778" y="92" width="210" height="66" rx="4"/>
+          <text x="788" y="120"><tspan class="hit">Tomas Ek</tspan><tspan class="code">, MRN </tspan><tspan class="hit">4471926</tspan><tspan class="code">,</tspan></text>
+          <text class="code" x="788" y="140">denies suicidal ideation.</text>
+        </svg>

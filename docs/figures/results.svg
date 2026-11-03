@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="400" viewBox="0 0 680 400" role="img" aria-label="Scatter chart of four setups. Presidio default: 44 percent false alarms, 21 percent missed. Presidio tuned: 19 and 13 percent. Clinical model: 19 and 5 percent. Clinical model plus patterns: 20 and 0 percent."><style>
+svg{background:#ffffff;--surface:#ffffff;--fg:#12202a;--muted:#52626d;--faint:#6d7b84;--line:#d5dde2;--s1:#2a78d6;--s2:#eb6834;--point:#8795a0;--ring:#ffffff;--crit:#b42626;color:var(--fg)}
+@media (prefers-color-scheme:dark){svg{background:#0d1117;--surface:#182229;--fg:#e8eef1;--muted:#a6b5bf;--faint:#8a99a3;--line:#2d3b44;--s1:#3987e5;--s2:#d95926;--point:#8a99a3;--ring:#0d1117;--crit:#ff9a90;}}
+.box{fill:var(--surface);stroke:var(--fg);stroke-width:1.25}
+.group{fill:none;stroke:var(--line);stroke-width:1.25}
+.planned{fill:var(--surface);stroke:var(--muted);stroke-width:1.25;stroke-dasharray:5 4}
+.edge{fill:none;stroke:var(--fg);stroke-width:1.5}
+.edge-planned{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.boundary{stroke:var(--crit);stroke-width:1.25;stroke-dasharray:2 4}
+.grid{stroke:var(--line);stroke-width:1}
+.axis{stroke:var(--faint);stroke-width:1}
+.t{fill:var(--fg);font:12.5px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.tb{fill:var(--fg);font:600 13px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.tm{fill:var(--muted);font:12px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.code{fill:var(--fg);font:13px ui-monospace,SFMono-Regular,Consolas,Menlo,monospace}
+.hit{fill:var(--fg);font:600 13px ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;text-decoration:underline}
+.bound-label{fill:var(--crit);font:12px 'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+.line1{fill:none;stroke:var(--s1);stroke-width:2}
+.line2{fill:none;stroke:var(--s2);stroke-width:2}
+.dot{fill:var(--point);stroke:var(--ring);stroke-width:2}
+.dot-key{fill:var(--s1);stroke:var(--ring);stroke-width:2}
+</style>
+          <text class="tm" x="60" y="18">Identifiers missed (lower is better)</text>
+
+          <line class="grid" x1="60" y1="286" x2="640" y2="286"/>
+          <line class="grid" x1="60" y1="222" x2="640" y2="222"/>
+          <line class="grid" x1="60" y1="158" x2="640" y2="158"/>
+          <line class="grid" x1="60" y1="94" x2="640" y2="94"/>
+          <line class="grid" x1="60" y1="30" x2="640" y2="30"/>
+          <line class="axis" x1="60" y1="350" x2="640" y2="350"/>
+          <text class="tm" x="50" y="354" text-anchor="end">0%</text>
+          <text class="tm" x="50" y="290" text-anchor="end">5%</text>
+          <text class="tm" x="50" y="226" text-anchor="end">10%</text>
+          <text class="tm" x="50" y="162" text-anchor="end">15%</text>
+          <text class="tm" x="50" y="98" text-anchor="end">20%</text>
+          <text class="tm" x="50" y="34" text-anchor="end">25%</text>
+          <text class="tm" x="60" y="370" text-anchor="middle">0%</text>
+          <text class="tm" x="168" y="370" text-anchor="middle">10%</text>
+          <text class="tm" x="276" y="370" text-anchor="middle">20%</text>
+          <text class="tm" x="384" y="370" text-anchor="middle">30%</text>
+          <text class="tm" x="492" y="370" text-anchor="middle">40%</text>
+          <text class="tm" x="600" y="370" text-anchor="middle">50%</text>
+          <text class="tm" x="330" y="394" text-anchor="middle">False alarms on clinical notes (lower is better)</text>
+
+          <circle class="dot" cx="536" cy="79" r="6"><title>Presidio default: 26 of 59 false alarms, 28 of 132 missed</title></circle>
+          <text class="tb" x="548" y="76">Presidio default</text>
+          <text class="tm" x="548" y="92">26 of 59, 28 of 132</text>
+
+          <circle class="dot" cx="261" cy="185" r="6"><title>Presidio tuned: 11 of 59 false alarms, 17 of 132 missed</title></circle>
+          <text class="tb" x="273" y="182">Presidio tuned</text>
+          <text class="tm" x="273" y="198">11 of 59, 17 of 132</text>
+
+          <circle class="dot" cx="261" cy="282" r="6"><title>Clinical model: 11 of 59 false alarms, 7 of 132 missed</title></circle>
+          <text class="tb" x="273" y="279">Clinical model</text>
+          <text class="tm" x="273" y="295">11 of 59, 7 of 132</text>
+
+          <circle class="dot-key" cx="279" cy="350" r="7"><title>Clinical model plus patterns: 12 of 59 false alarms, 0 of 132 missed</title></circle>
+          <text class="tb" x="292" y="330">Clinical model + patterns</text>
+          <text class="tm" x="292" y="345">12 of 59, 0 of 132</text>
+        </svg>
