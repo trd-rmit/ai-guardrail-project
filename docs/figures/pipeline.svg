@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="940" height="372" viewBox="0 0 940 372" role="img" aria-label="Pipeline from a message through input checks, across a trust boundary to an LLM, then through output checks to a reply. Only the three input checks have been tested. The LLM, output checks, access control and refusal path are not built."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="372" viewBox="0 0 940 372" role="img" aria-label="Pipeline from a message through input checks, across a trust boundary to Claude, then through output checks to a reply. Input checks, masking, refusal and access control are built and tested locally. Claude hasn't been run yet and output checks aren't built."><style>
 svg{background:#ffffff;--surface:#ffffff;--fg:#12202a;--muted:#52626d;--faint:#6d7b84;--line:#d5dde2;--s1:#2a78d6;--s2:#eb6834;--point:#8795a0;--ring:#ffffff;--crit:#b42626;color:var(--fg)}
 @media (prefers-color-scheme:dark){svg{background:#0d1117;--surface:#182229;--fg:#e8eef1;--muted:#a6b5bf;--faint:#8a99a3;--line:#2d3b44;--s1:#3987e5;--s2:#d95926;--point:#8a99a3;--ring:#0d1117;--crit:#ff9a90;}}
 .box{fill:var(--surface);stroke:var(--fg);stroke-width:1.25}
@@ -44,15 +44,15 @@ svg{background:#ffffff;--surface:#ffffff;--fg:#12202a;--muted:#52626d;--faint:#6
           <text class="tm" x="224" y="223">1 of 3 missed</text>
 
           <line class="boundary" x1="468" y1="16" x2="468" y2="360"/>
-          <text class="bound-label" x="478" y="32">Trust boundary, if the LLM</text>
-          <text class="bound-label" x="478" y="48">is hosted outside</text>
+          <text class="bound-label" x="478" y="32">Trust boundary: text</text>
+          <text class="bound-label" x="478" y="48">leaves your machine</text>
 
-          <line class="edge-planned" x1="416" y1="150" x2="518" y2="150" marker-end="url(#a1)"/>
+          <line class="edge" x1="416" y1="150" x2="518" y2="150" marker-end="url(#a1)"/>
           <text class="t" x="442" y="142" text-anchor="middle">masked</text>
 
           <rect class="planned" x="520" y="120" width="110" height="60" rx="4"/>
-          <text class="tb" x="575" y="146" text-anchor="middle">LLM</text>
-          <text class="tm" x="575" y="164" text-anchor="middle">not chosen yet</text>
+          <text class="tb" x="575" y="146" text-anchor="middle">Claude</text>
+          <text class="tm" x="575" y="164" text-anchor="middle">not run yet</text>
 
           <line class="edge-planned" x1="630" y1="150" x2="688" y2="150" marker-end="url(#a1)"/>
           <text class="t" x="659" y="142" text-anchor="middle">draft</text>
@@ -66,28 +66,28 @@ svg{background:#ffffff;--surface:#ffffff;--fg:#12202a;--muted:#52626d;--faint:#6
           <rect class="planned" x="852" y="120" width="72" height="60" rx="4"/>
           <text class="tb" x="888" y="155" text-anchor="middle">Reply</text>
 
-          <path class="edge-planned" d="M196 220 H68 V298" marker-end="url(#a1)"/>
+          <path class="edge" d="M196 220 H68 V298" marker-end="url(#a1)"/>
           <text class="t" x="130" y="212" text-anchor="middle">flagged</text>
-          <rect class="planned" x="16" y="300" width="104" height="52" rx="4"/>
+          <rect class="box" x="16" y="300" width="104" height="52" rx="4"/>
           <text class="tb" x="68" y="322" text-anchor="middle">Refuse</text>
           <text class="tm" x="68" y="339" text-anchor="middle">and log</text>
 
-          <rect class="planned" x="196" y="300" width="110" height="52" rx="4"/>
+          <rect class="box" x="196" y="300" width="110" height="52" rx="4"/>
           <text class="tb" x="251" y="322" text-anchor="middle">Patient</text>
           <text class="tb" x="251" y="339" text-anchor="middle">records</text>
 
-          <line class="edge-planned" x1="306" y1="326" x2="338" y2="326" marker-end="url(#a1)"/>
+          <line class="edge" x1="306" y1="326" x2="338" y2="326" marker-end="url(#a1)"/>
 
-          <rect class="planned" x="340" y="300" width="110" height="52" rx="4"/>
+          <rect class="box" x="340" y="300" width="110" height="52" rx="4"/>
           <text class="tb" x="395" y="322" text-anchor="middle">Access control</text>
           <text class="tm" x="395" y="339" text-anchor="middle">who sees what</text>
 
-          <path class="edge-planned" d="M450 326 H575 V182" marker-end="url(#a1)"/>
+          <path class="edge" d="M450 326 H575 V182" marker-end="url(#a1)"/>
           <text class="t" x="585" y="256">permitted records,</text>
           <text class="t" x="585" y="272">masked</text>
 
           <rect class="box" x="700" y="296" width="24" height="14" rx="2"/>
-          <text class="t" x="732" y="307">tested in the lab</text>
+          <text class="t" x="732" y="307">built, tested locally</text>
           <rect class="planned" x="700" y="322" width="24" height="14" rx="2"/>
-          <text class="t" x="732" y="333">not built yet</text>
+          <text class="t" x="732" y="333">not run or not built yet</text>
         </svg>

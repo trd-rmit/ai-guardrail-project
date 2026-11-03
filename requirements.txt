@@ -2,3 +2,5 @@ presidio-analyzer==2.2.366
 transformers==5.22.1
 torch==2.15.0
 streamlit==1.66.1
+anthropic==2.4.0
+python-dotenv==1.2.4

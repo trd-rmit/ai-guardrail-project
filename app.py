@@ -1,13 +1,17 @@
 """See what each guardrail flags on clinical text, and what moving its threshold costs."""
 import html
 import json
+import os
 from pathlib import Path
 
 import altair as alt
+import anthropic
 import pandas as pd
 import streamlit as st
 
+from assistant import MODEL, cost, run
 from guardrails import CHECKS, GUARDRAILS, PII_GUARDRAILS, THRESHOLDS
+from hospital import CLINICIAN, PROMPTS
 from scoring import judge, missed_names_by_group, summarize
 
 RESULTS = Path(__file__).parent / "results" / "scores.json"
@@ -155,6 +159,61 @@ def scoreboard(data, thresholds):
     st.dataframe(pd.DataFrame(mistakes), hide_index=True, width="stretch")
 
 
+def show_run(column, title, result):
+    column.subheader(title)
+    column.metric("Patient identifiers sent to Claude", result["identifiers_sent"])
+    column.write(result["reply"] or "No reply.")
+    if result["orders"]:
+        column.markdown("**Orders**")
+        column.dataframe(pd.DataFrame(result["orders"]), hide_index=True, width="stretch")
+    if result["tool_calls"]:
+        column.markdown("**Tools used**")
+        column.dataframe(pd.DataFrame(result["tool_calls"]), hide_index=True, width="stretch")
+    if result["trace"]:
+        column.markdown("**Guardrails**")
+        column.dataframe(pd.DataFrame(result["trace"]), hide_index=True, width="stretch")
+    with column.expander("What Claude received"):
+        for text in result["sent_to_claude"]:
+            st.code(text, language=None, wrap_lines=True)
+        if not result["sent_to_claude"]:
+            st.write("Nothing. This request never left the machine.")
+    column.caption(f"{result['input_tokens']:,} input and {result['output_tokens']:,} output tokens, about ${cost(result):.4f}")
+
+
+def assistant_view():
+    st.warning("Messages here are sent to Anthropic's API. Use made-up text only, never real patient data.")
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        st.info("To use the assistant, add a line to a `.env` file in this folder: `ANTHROPIC_API_KEY=your-key`. Then restart the app. Git ignores this file.")
+        return
+
+    label = st.selectbox(f"Ask as {CLINICIAN}", PROMPTS)
+    message, purpose = PROMPTS[label]
+    st.caption(purpose)
+    question = st.text_area("Message", value=message, key=f"question-{label}", max_chars=2000, height=90)
+    st.caption(f"Each click calls {MODEL} and is billed to your key. This view uses the default thresholds, not the sidebar.")
+    if st.button("Run with and without guardrails", type="primary", disabled=not question.strip()):
+        try:
+            with st.spinner("Asking Claude twice. The first run also loads the guardrail models."):
+                st.session_state["runs"] = (question, run(question, False), run(question, True))
+        except anthropic.AuthenticationError:
+            st.error("Anthropic rejected the API key. Check `ANTHROPIC_API_KEY` in your `.env` file.")
+        except anthropic.PermissionDeniedError:
+            st.error("This API key doesn't have access to this model.")
+        except anthropic.RateLimitError:
+            st.error("Rate limit reached. Wait a moment, then try again.")
+        except anthropic.APIStatusError as error:
+            st.error(f"The API returned an error ({error.status_code}): {error.message}")
+        except anthropic.APIConnectionError:
+            st.error("Couldn't reach the API. Check your internet connection.")
+
+    if "runs" in st.session_state:
+        asked, unguarded, guarded = st.session_state["runs"]
+        st.markdown(f"**Asked:** {html.escape(asked)}")
+        left, right = st.columns(2)
+        show_run(left, "No guardrails", unguarded)
+        show_run(right, "With guardrails", guarded)
+
+
 st.title("Clinical Guardrail Lab")
 st.write("Guardrails built for general text can misread normal medical language. This lab measures how often that happens, and what it costs to loosen them.")
 
@@ -167,7 +226,10 @@ st.sidebar.header("Flag thresholds")
 st.sidebar.caption("Lower catches more. Higher raises fewer false alarms.")
 threshold_values = {name: st.sidebar.slider(title, 0.05, 0.95, THRESHOLDS[name], 0.05) for name, title in GUARDRAILS.items()}
 # Not st.tabs: it runs every tab on each rerun, which would load the models for the scoreboard too.
-if st.radio("View", ["Scoreboard", "Try it"], horizontal=True, label_visibility="collapsed") == "Scoreboard":
+view = st.radio("View", ["Scoreboard", "Try it", "Assistant"], horizontal=True, label_visibility="collapsed")
+if view == "Scoreboard":
     scoreboard(results, threshold_values)
-else:
+elif view == "Try it":
     try_it(results, threshold_values)
+else:
+    assistant_view()

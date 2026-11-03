@@ -6,9 +6,9 @@ The first experiment is **Clinical Guardrail Lab**. Guardrails built for general
 
 All test data is made up by hand. Never add real patient data to this repo.
 
-![Pipeline from a message through input checks, across a trust boundary to an LLM, then through output checks to a reply. Only the three input checks have been tested so far.](docs/figures/pipeline.svg)
+![Pipeline from a message through input checks, across a trust boundary to Claude, then through output checks to a reply. Input checks, masking, refusal and access control are built and tested locally. Claude hasn't been run yet and output checks aren't built.](docs/figures/pipeline.svg)
 
-Identifiers have to be removed before text crosses the boundary, so detection comes first. Only the solid boxes exist today, and the lab detects identifiers without replacing them yet. Miss counts are from held-out and fresh test cases.
+Identifiers have to be removed before text crosses the boundary, so masking comes first. Solid boxes are built and tested locally against a stand-in for the API, with no real Claude calls so far. Miss counts are from held-out and fresh test cases.
 
 ## Results so far
 
@@ -75,6 +75,18 @@ Blue lines are false alarms on clinical notes and orange lines are attacks misse
 
 These are 739 cases written by one author, mostly short sentences, with few examples per category. Read them as signs of where to look, not as benchmarks. The real test is the organisation's own data, inside an environment approved for it.
 
+## The assistant
+
+The Assistant view asks Claude the same question twice for a made-up clinician at a made-up hospital: once with no guardrails, and once with them. Everything the guarded version does happens on your machine, around Claude:
+
+- **Before Claude:** the injection and content checks can refuse a message outright. Identifiers are swapped for placeholders like `[ID_1]`, and swapped back in the reply the clinician sees.
+- **Reading charts:** only the clinician's own patients are returned, and a note that looks like an attack is withheld. Charts are masked before Claude sees them.
+- **Orders:** these are held for human approval, and never placed automatically.
+
+The view counts how many known patient identifiers were sent to Claude each way and shows exactly what Claude received. `test_assistant.py` checks all of this through the real SDK against a local stand-in for the API, which costs nothing and proves the wiring. It says nothing about how Claude itself responds, and no results from real Claude are recorded here yet.
+
+Unlike the rest of the lab, this view sends text to Anthropic. Use made-up text only.
+
 ## Run it
 
 ```bash
@@ -84,7 +96,9 @@ python -m venv .venv
 .venv/Scripts/python -m streamlit run app.py
 ```
 
-The saved results load straight away. "Try it" downloads the three models on first use, about 2.5 GB.
+The saved results load straight away. "Try it" and the Assistant download the three models on first use, about 2.5 GB.
+
+To use the Assistant, copy `.env.example` to `.env` and add your Anthropic API key. Each run is billed to that key, and the app shows the approximate cost.
 
 To re-run the guardrails on the test set, or run the self-checks:
 
@@ -100,6 +114,10 @@ To re-run the guardrails on the test set, or run the self-checks:
 .venv/Scripts/python guardrails.py
 ```
 
+```bash
+.venv/Scripts/python test_assistant.py
+```
+
 ## What's where
 
 - `data/cases.jsonl`: labelled test cases, split into development, held-out and fresh
@@ -107,11 +125,17 @@ To re-run the guardrails on the test set, or run the self-checks:
 - `scoring.py`: how false alarms and misses are counted
 - `evaluate.py`: runs every check and saves `results/scores.json`
 - `app.py`: the Streamlit lab
+- `assistant.py`: the assistant, with and without guardrails
+- `hospital.py`: the made-up patients, clinician and example prompts
+- `test_assistant.py`: guardrail tests against a local stand-in for the API
 - `docs/figures/`: the diagrams in this README, which switch between light and dark themes
 
 ## Limits
 
 - Prompt Guard and Llama Guard need gated Hugging Face access, so open models stand in for them for now.
-- The assistant itself isn't built yet, because it needs an LLM. This lab tests the guardrails on their own.
+- The assistant has only run against a local stand-in, so there are no results from real Claude yet.
+- Output checks, such as catching invented facts, aren't built yet. Nor are GuardrailsAI or NeMo.
+- Held orders have no approve button, and nothing limits doses, so a dangerous order still reaches the approval queue.
+- Masking can damage clinical text, because every false alarm becomes a placeholder. "What Claude received" shows the result.
 - The injection and content checks only read the first 512 tokens, so a long note needs splitting first. The PII checks read the whole text.
 - Timings are from one run on a laptop CPU.
